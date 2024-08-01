@@ -12,11 +12,11 @@ os.environ["LANGCHAIN_ENDPOINT"]="https://api.smith.langchain.com"
 # os.environ["LANGCHAIN_API_KEY"]="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"
 # os.environ["LANGCHAIN_PROJECT"]="Multi-agent Collaboration"
 
-# os.environ["LANGCHAIN_API_KEY"]="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"
-# os.environ["LANGCHAIN_PROJECT"]="Convogene Ap"
+os.environ["LANGCHAIN_API_KEY"]="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"
+os.environ["LANGCHAIN_PROJECT"]="Convogene Ap"
 
-os.environ["LANGCHAIN_API_KEY"] = "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"
-os.environ["LANGCHAIN_PROJECT"] = "rag-infobell"
+# os.environ["LANGCHAIN_API_KEY"] = "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"
+# os.environ["LANGCHAIN_PROJECT"] = "rag-infobell"
 
 #st.set_page_config(layout="wide")
 #st.title("Convogene Logs")
@@ -123,7 +123,7 @@ class DataHandler:
 
     def Run(self):
         while True:
-            last_data = GetData(0, 5, 31, 0)
+            last_data, _, _ = GetData(0, 5, 31, 0)
             #last_data.to_csv('OneDayData.csv')
             if not last_data.empty:
                 last_data_trace_ids = list(last_data['TraceID'])
