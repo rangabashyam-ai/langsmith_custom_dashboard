@@ -1,0 +1,8 @@
+pandas
+langchain
+python-dotenv
+langsmith
+fastapi
+uvicorn
+pytz
+pathlib

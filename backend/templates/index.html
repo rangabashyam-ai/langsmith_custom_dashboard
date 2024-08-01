@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convogene Dashboard</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caudex:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <style>
+        /* Light Theme Styles */
+        body {
+            font-family: "Caudex", serif;
+            margin: 20px;
+            background-color: #f4f7f9;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-family: "Caudex", serif;
+            font-weight: 700;
+        }
+        #table-container {
+            overflow-x: auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+            font-size: 14px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+            overflow: hidden;
+            font-family: "Caudex", serif;
+            table-layout: fixed; /* Ensures all columns have equal width */
+        }
+        th, td {
+            padding: 12px; /* Adjusted padding */
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; /* Ellipsis for overflowing text */
+        }
+        th {
+            background-color: #007BFF;
+            color: white;
+            font-family: "Caudex", serif;
+            font-weight: 700;
+        }
+        tr {
+            border-bottom: 1px solid #dddddd;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:last-child {
+            border-bottom: none;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .green-text {
+            color: green;
+        }
+        .orange-text {
+            color: orange;
+        }
+        .red-text {
+            color: red;
+        }
+        @media (max-width: 600px) {
+            table {
+                font-size: 12px;
+            }
+            th, td {
+                padding: 10px;
+            }
+        }
+
+        /* Dark Theme Styles */
+        .dark-theme {
+            background-color: #222;
+            color: #fff;
+        }
+
+        .dark-theme h1 {
+            color: #ddd;
+        }
+
+        .dark-theme table {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .dark-theme th {
+            background-color: #0056b3; /* Adjust colors as needed */
+        }
+
+        .dark-theme tr:nth-child(even) {
+            background-color: #444;
+        }
+
+        .dark-theme tr:hover {
+            background-color: #555;
+        }
+
+        /* Theme Switch Button */
+        .theme-switch {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            line-height: 1;
+            color: #333;
+        }
+
+        .theme-switch.dark-theme {
+            color: #ddd;
+        }
+
+        .top-right-image {
+            position: absolute;
+            top: 20px;
+            left: 80px; /* Adjust as needed */
+            width: 150px; /* Adjust width */
+            height: auto; /* Maintain aspect ratio */
+}
+
+    </style>
+</head>
+<body>
+    <h1>Convogene Logs</h1>
+    <div id="table-container">
+        <table id="data-table"></table>
+    </div>
+
+    <img src="/static/infobellit.png" alt="Image Description" class="top-right-image">
+
+    <button class="theme-switch" onclick="toggleTheme()">
+        🌙 <!-- Sun emoji for light theme -->
+    </button>
+
+    <script>
+        function fetchData() {
+            $.ajax({
+                url: '/data',
+                type: 'GET',
+                success: function(response) {
+                    const data = JSON.parse(response);
+                    let table = '<thead><tr>';
+                    data.columns.forEach(col => {
+                        table += `<th>${col}</th>`;
+                    });
+                    table += '</tr></thead><tbody>';
+                    const latencyIndex = data.columns.indexOf('Latency');
+                    data.data.forEach((row, rowIndex) => {
+                        table += '<tr>';
+                        row.forEach((cell, index) => {
+                            let cellClass = '';
+                            if (index === latencyIndex) {
+                                let value = cell;
+                                if (isNaN(value)) {
+                                    value = parseInt(value);
+                                }
+                                if (value < 3) {
+                                    cellClass = 'green-text';
+                                } else if (value >= 3 && value <= 5) {
+                                    cellClass = 'orange-text';
+                                } else {
+                                    cellClass = 'red-text';
+                                }
+                            }
+                            // Check if cell is null or undefined
+                            if (cell === null || cell === undefined) {
+                                table += `<td></td>`;
+                            } else {
+                                table += `<td title="${cell}" class="${cellClass}">${cell}</td>`;
+                            }
+                        });
+                        table += '</tr>';
+
+                        // Adjust column widths based on first row data length
+                        if (rowIndex === 0) {
+                            adjustColumnWidths(row);
+                        }
+                    });
+                    table += '</tbody>';
+                    $('#data-table').html(table);
+                }
+            });
+        }
+
+        function adjustColumnWidths(firstRowData) {
+    $('#data-table th').each(function(index) {
+        const columnWidths = firstRowData.map(row => {
+            const cellValue = row[index];
+            if (cellValue !== undefined && cellValue !== null) {
+                return cellValue.toString().length;
+            }
+            return 0; // Handle undefined or null values
+        });
+        const maxColumnWidth = Math.max(...columnWidths) * 10; // Adjust multiplier as needed
+        $(this).width(maxColumnWidth + 40); // Adding padding and some extra space
+    });
+}
+
+
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('dark-theme');
+
+            // Update theme switch button emoji
+            const themeSwitchButton = document.querySelector('.theme-switch');
+            if (body.classList.contains('dark-theme')) {
+                themeSwitchButton.innerHTML = '☀️'; 
+            } else {
+                themeSwitchButton.innerHTML = '🌙'; 
+            }
+        }
+
+        $(document).ready(function() {
+            fetchData(); // Initial fetch
+            setInterval(fetchData, 1000); // Fetch every 1 second
+        });
+    </script>
+</body>
+</html>
