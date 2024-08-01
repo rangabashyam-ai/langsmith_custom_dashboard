@@ -1,3 +1,4 @@
+/* Basic Styles */
 .App {
   text-align: center;
 }
@@ -22,6 +23,8 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  padding: 1em;
+  box-sizing: border-box;
 }
 
 .App-link {
@@ -36,6 +39,7 @@
     transform: rotate(360deg);
   }
 }
+
 /* Light Mode */
 :root {
   --background-color: #ffffff;
@@ -47,6 +51,14 @@
   --progress-text-color: #333;
   --progress-trail-color: #d6d6d6;
   --progress-background-color: #f0f0f0;
+  --table-background: #ffffff;
+  --header-background: #4CAF50;
+  --header-text-color: #ffffff;
+  --row-even-background: #f9f9f9;
+  --row-odd-background: #ffffff;
+  --row-hover-background: #f1f1f1;
+  --header-border-color: #ddd;
+  --row-border-color: #ddd;
 }
 
 /* Dark Mode */
@@ -107,33 +119,39 @@ body {
 .dashboard-content {
   display: flex;
   flex: 1;
+  flex-wrap: wrap;
 }
 
 .dashboard-sidebar {
   width: 200px;
   background-color: var(--sidebar-background);
   padding: 10px;
+  flex: 0 0 auto;
 }
 
 .dashboard-main {
-  flex: 1;
+  flex: 1 1 auto;
   padding: 20px;
   display: flex;
   flex-direction: column;
 }
 
-.chart-section, .data-section {
+.chart-section,
+.data-section {
   display: flex;
+  flex: 1;
+  flex-wrap: wrap;
   justify-content: space-between;
 }
 
 .dashboard-panel {
-  flex: 1;
+  flex: 1 1 48%;
   margin: 10px;
   padding: 20px;
   background-color: var(--panel-background);
   border-radius: 8px;
   box-shadow: 0 2px 4px var(--panel-shadow);
+  box-sizing: border-box;
 }
 
 .dashboard-panel h2 {
@@ -150,15 +168,60 @@ body {
 .data-section .dashboard-panel {
   width: 48%;
 }
-:root {
-  --table-background: #ffffff;
-  --text-color: #333;
-  --header-background: #4CAF50;
-  --header-text-color: #ffffff;
-  --row-even-background: #f9f9f9;
-  --row-odd-background: #ffffff;
-  --row-hover-background: #f1f1f1;
-  --header-border-color: #ddd;
-  --row-border-color: #ddd;
+
+/* Responsive Adjustments */
+@media (max-width: 1200px) {
+  .dashboard-sidebar {
+    width: 180px;
+  }
 }
 
+@media (max-width: 992px) {
+  .dashboard-sidebar {
+    width: 160px;
+  }
+  
+  .chart-section .dashboard-panel,
+  .data-section .dashboard-panel {
+    width: 100%;
+  }
+
+  .chart-section,
+  .data-section {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    font-size: 1.5em;
+    padding: 15px;
+  }
+
+  .dashboard-sidebar {
+    display: none;
+  }
+
+  .dashboard-main {
+    padding: 10px;
+  }
+  
+  .theme-toggle-button {
+    top: 10px;
+    left: 10px;
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .dashboard-header {
+    font-size: 1.2em;
+    padding: 10px;
+  }
+
+  .dashboard-panel {
+    padding: 10px;
+    margin: 5px;
+  }
+}
