@@ -5,29 +5,25 @@ const analyticsData = [
   {
     title: 'Visitors',
     value: '13.7K',
-    target: '172,456 Target Users',
-    change: '+10%',
+
     backgroundColor: '#3498db',
   },
   {
     title: 'Bounce Rate',
     value: '41.6%',
-    target: '472,456 Target Users',
-    change: '+5%',
+
     backgroundColor: '#2ecc71',
   },
   {
     title: 'Users',
     value: '19M',
-    target: '172,456 Target Users',
-    change: '+10%',
+
     backgroundColor: '#f39c12',
   },
   {
     title: 'New Contacts',
     value: '75',
-    target: '172,456 Target Users',
-    change: '-5%',
+
     backgroundColor: '#e74c3c',
   },
 ];
