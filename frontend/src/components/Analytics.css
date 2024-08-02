@@ -1,0 +1,29 @@
+.analytics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .card {
+    background: #ecf0f1;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    color: white;
+    position: relative;
+  }
+  
+  .card .value {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .card .target,
+  .card .change {
+    font-size: 14px;
+    position: absolute;
+    bottom: 10px;
+    left: 20px;
+  }
+  
