@@ -47,7 +47,7 @@
   flex-direction: column;
 }
 
-.chart-section {
+.overview-section {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -65,6 +65,10 @@
 
 .dashboard-panel h2 {
   margin-top: 0;
+}
+
+.pie-chart {
+  flex: 1 1 48%; /* Adjust the size to fit next to Analytics */
 }
 
 .error-message {
@@ -108,14 +112,3 @@
   }
 }
 
-@media (max-width: 576px) {
-  .dashboard-header {
-    font-size: 1.2em;
-    padding: 10px;
-  }
-
-  .dashboard-panel {
-    padding: 10px;
-    margin: 5px;
-  }
-}

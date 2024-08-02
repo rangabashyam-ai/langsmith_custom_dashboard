@@ -4,7 +4,7 @@
   background: #2c3e50;
   color: #ecf0f1;
   height: 100vh;
-  padding: 20px;
+  padding: 50px;
   box-sizing: border-box;
   transition: width 0.3s;
   position: fixed; /* Ensure it's fixed on the side */

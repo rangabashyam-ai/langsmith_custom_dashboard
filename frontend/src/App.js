@@ -1,15 +1,3 @@
-// import React from 'react';
-// import Dashboard from './components/Dashboard';
-// import './App.css';
-
-// const App = () => (
-//   <div className="App">
-//     <Dashboard />
-//   </div>
-// );
-
-// export default App;
-
 
 import React, { useState } from 'react';
 import Dashboard from './components/Dashboard'; // Import your Dashboard component

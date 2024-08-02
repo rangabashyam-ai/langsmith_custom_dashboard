@@ -12,9 +12,10 @@ os.environ["LANGCHAIN_ENDPOINT"]="https://api.smith.langchain.com"
 # os.environ["LANGCHAIN_API_KEY"]="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"
 # os.environ["LANGCHAIN_PROJECT"]="Multi-agent Collaboration"
 
-os.environ["LANGCHAIN_API_KEY"]="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"
-os.environ["LANGCHAIN_PROJECT"]="Convogene Ap"
-
+# os.environ["LANGCHAIN_API_KEY"]="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"
+# os.environ["LANGCHAIN_PROJECT"]="Convogene Ap"
+os.environ["LANGCHAIN_PROJECT"] = "pr-sweaty-spume-86"
+os.environ["LANGCHAIN_API_KEY"] = "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"
 # os.environ["LANGCHAIN_API_KEY"] = "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"
 # os.environ["LANGCHAIN_PROJECT"] = "rag-infobell"
 
@@ -50,7 +51,7 @@ def FineTuneData(runs):
             run_data['Latency'] = None
         else:
             gap = run.end_time - run.start_time
-            run_data['Latency'] = str(round(gap.total_seconds(), 2)) + 's'
+            run_data['Latency'] = round(gap.total_seconds(), 2)
 
         run_data['TotalTokens'] = run.total_tokens
         run_data['PromptTokens'] = run.prompt_tokens
@@ -89,15 +90,18 @@ def GetData(days, hours, minutes, seconds):
 
     names = []
     run_types = []
-    for run in non_root_runs:
+    for run in runs:
         names.append(run.name)
         run_types.append(run.run_type)
     
     names_count = {item: names.count(item) for item in set(names)}
     run_types_count = {item: run_types.count(item) for item in set(run_types)}
+    keys_to_keep = {'ChatOpenAI', 'GoogleGenerativeAI', 'ChatCohere'}
 
+# Create a new dictionary with only the specified keys
+    filtered_dict = {k: v for k, v in names_count.items() if k in keys_to_keep}
     #print(f"[INFO] Last {days}days {hours}hours {minutes}minutes {seconds}seconds Data has been fetched")
-    return data, names_count, run_types_count
+    return data, filtered_dict, run_types_count
     #data.to_csv('LangsmithData.csv')
 
 class DataHandler:

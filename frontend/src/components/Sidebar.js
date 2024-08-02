@@ -1,25 +1,3 @@
-// import React from 'react';
-// import './Sidebar.css';
-
-// const Sidebar = () => (
-//   <div className="sidebar">
-//     <div className="profile">
-//       <img src="profile.jpg" alt="profile" />
-//       <h2>Ranga Bashyam</h2>
-//     </div>
-//     <ul>
-//       <li><a href="#bar-chart">Bar Chart</a></li>
-//       <li><a href="#pie-chart">Pie Chart</a></li>
-//       <li><a href="#pie-chart-2">Pie Chart 2</a></li>
-//       <li><a href="#data-table">Data Table</a></li>
-//       <li><a href="#progress">Progress</a></li>
-//       <li><a href="#analytics">Analytics</a></li>
-//     </ul>
-//   </div>
-// );
-
-// export default Sidebar;
-
 import React, { useState } from 'react';
 import { Link } from 'react-scroll';
 import './Sidebar.css';
@@ -53,10 +31,7 @@ const Sidebar = () => {
       <button className="collapse-toggle" onClick={handleCollapseToggle}>
         {isCollapsed ? '>' : '<'}
       </button>
-      <div className="profile">
-        <img src="profile.jpg" alt="profile" />
-        {!isCollapsed && <h2>Ranga Bashyam</h2>}
-      </div>
+
       <div className="search-container">
         <input 
           type="text" 
