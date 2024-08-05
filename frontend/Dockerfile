@@ -46,5 +46,5 @@ RUN npm run build
 EXPOSE 3000
 
 # Command to run the React app
-CMD ["node", "--trace-deprecation", "node_modules/.bin/react-scripts", "start"]
+CMD ["npm", "start"]
 
