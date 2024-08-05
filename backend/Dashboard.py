@@ -14,7 +14,7 @@ os.environ["LANGCHAIN_ENDPOINT"]="https://api.smith.langchain.com"
 
 # os.environ["LANGCHAIN_API_KEY"]="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"
 # os.environ["LANGCHAIN_PROJECT"]="Convogene Ap"
-os.environ["LANGCHAIN_PROJECT"] = "pr-sweaty-spume-86"
+os.environ["LANGCHAIN_PROJECT"] = "amd-convogene"
 os.environ["LANGCHAIN_API_KEY"] = "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"
 # os.environ["LANGCHAIN_API_KEY"] = "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"
 # os.environ["LANGCHAIN_PROJECT"] = "rag-infobell"
@@ -85,7 +85,8 @@ def GetData(days, hours, minutes, seconds):
     #print(f"[INFO] Total time taken to fetch Runs: {end-start}")
 
     root_runs = [run for run in runs if run.parent_run_id == None]
-    data = FineTuneData(root_runs)
+    root_runs_no_llms = [run for run in root_runs if run.run_type != 'llm']
+    data = FineTuneData(root_runs_no_llms)
     non_root_runs = [run for run in runs if run not in root_runs]
 
     names = []

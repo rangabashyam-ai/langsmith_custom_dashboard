@@ -4,25 +4,29 @@ import BarChartComponent from './BarChartComponent';
 import PieChartComponent from './PieChartComponent';
 import Analytics from './Analytics';
 import Sidebar from './Sidebar';
+import DataTable from './DataTable';
 import './Dashboard.css';
 
 const Dashboard = () => {
   const [barChartData, setBarChartData] = useState([]);
-  const [pieChartData, setPieChartData] = useState([]);
+  const [pieChartDataStatus, setPieChartDataStatus] = useState([]);
+  const [pieChartDataNamesCount, setPieChartDataNamesCount] = useState([]);
+  const [pieChartDataRunTypesCount, setPieChartDataRunTypesCount] = useState([]);
   const [tableData, setTableData] = useState([]);
-  const [progressValue, setProgressValue] = useState(0);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/data'); // Ensure the URL matches your backend endpoint
-        const { barChartData, pieChartData, tableData, progressValue } = response.data;
+        const response = await axios.get('http://127.0.0.1:8000/data');
+        const { barChartData, pieChartDataStatus, pieChartDataNamesCount, pieChartDataRunTypesCount, tableData } = response.data;
 
         setBarChartData(barChartData);
-        setPieChartData(pieChartData);
+        setPieChartDataStatus(pieChartDataStatus);
+        setPieChartDataNamesCount(pieChartDataNamesCount);
+        setPieChartDataRunTypesCount(pieChartDataRunTypesCount);
         setTableData(tableData);
-        setProgressValue(progressValue);
+        
       } catch (error) {
         console.error('Error fetching data:', error);
         setError('Failed to fetch data.');
@@ -46,19 +50,27 @@ const Dashboard = () => {
               <h2>Analytics Overview</h2>
               <Analytics />
             </section>
-            <section id="pie-chart" className="dashboard-panel pie-chart">
-              <h2>Pie Chart Overview</h2>
-              <PieChartComponent data={pieChartData} />
+            <section id="pie-chart-status" className="dashboard-panel pie-chart">
+              <h2>Error Status</h2>
+              <PieChartComponent data={pieChartDataStatus} />
+            </section>
+            <section id="pie-chart-names-count" className="dashboard-panel pie-chart">
+              <h2>LLM calls Count</h2>
+              <PieChartComponent data={pieChartDataNamesCount} />
+            </section>
+            <section id="pie-chart-run-types-count" className="dashboard-panel pie-chart">
+              <h2>Run Types Count</h2>
+              <PieChartComponent data={pieChartDataRunTypesCount} />
             </section>
           </div>
           <div className="chart-section">
             <section id="bar-chart" className="dashboard-panel">
-              <h2>Bar Chart Overview</h2>
+              <h2>Requests vs Time</h2>
               <BarChartComponent data={barChartData} />
             </section>
             <section id="table-data" className="dashboard-panel">
-              <h2>Table Data</h2>
-              {/* Add DataTable component if needed */}
+              <h2>Convogene Logs</h2>
+              <DataTable data={tableData} />
             </section>
           </div>
         </main>

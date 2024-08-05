@@ -14,9 +14,9 @@ const Analytics = () => {
 
         const fetchedAnalyticsData = [
           { title: 'Average Tokens Per Question', value: averageTokensPerQuestion, backgroundColor: '#3498db' },
-          { title: 'Average Cost Per Question', value: averageCostPerQuestion, backgroundColor: '#2ecc71' },
-          { title: 'Total Cost Till Now', value: totalCost, backgroundColor: '#f39c12' },
-          { title: 'Average Latency Per Question', value: averageLatencyPerQuestion, backgroundColor: '#e74c3c' },
+          { title: 'Average Cost Per Question ($)', value: '$'+ ' ' + averageCostPerQuestion, backgroundColor: '#2ecc71' },
+          { title: 'Total Cost Till Now ($)', value: '$'+ ' ' + totalCost, backgroundColor: '#f39c12' },
+          { title: 'Average Latency Per Question (Sec)', value: averageLatencyPerQuestion + ' Sec', backgroundColor: '#e74c3c' },
         ];
 
         setAnalyticsData(fetchedAnalyticsData);

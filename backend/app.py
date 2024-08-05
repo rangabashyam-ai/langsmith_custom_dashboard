@@ -24,7 +24,7 @@ logging.basicConfig(level=logging.INFO)
 
 # Get data and save it to CSV
 print("[INFO] Fetching Data")
-df, names_count, run_types_count = GetData(days=0, hours=10, minutes=30, seconds=0)
+df, names_count, run_types_count = GetData(days=3, hours=5, minutes=30, seconds=0)
 df.to_csv(Path(__file__).parent / 'LangsmithData.csv')
 
 # Initialize DataHandler
@@ -52,8 +52,44 @@ async def index():
         raise HTTPException(status_code=404, detail="Index file not found")
 
 
+# @app.get("/data")
+# async def data():
+#     try:
+#         global df, names_count, run_types_count
+#         df = data_handler.ReturnData()
+#         print(names_count)
+#         print(run_types_count)
+
+#         # Convert 'Time' column to datetime if it's not already
+#         df['Time'] = pd.to_datetime(df['Time'])
+
+#         # Set the time column as index
+#         df.set_index('Time', inplace=True)
+
+#         # Resample by hour (or any other period you prefer) and count the number of requests
+#         bar_chart_data = df.resample('H').size().reset_index(name='Number of Requests')
+
+#         # Rename columns for the bar chart
+#         bar_chart_data = bar_chart_data.rename(columns={"Time": "name", "Number of Requests": "value"})
+
+#         # Pie chart and table data (as before)
+#         status_counts = df['Status'].value_counts().to_dict()
+#         pie_chart_data = [{"name": status, "value": count} for status, count in status_counts.items()]
+#         table_data = df.reset_index().to_dict(orient='records')  # Reset index for table display
+
+#         return {
+#             "barChartData": bar_chart_data.to_dict(orient='records'),
+#             "pieChartData": pie_chart_data,
+#             "tableData": table_data,
+#             "progressValue": 50  # Example value
+#         }
+#     except Exception as e:
+#         logging.error(f"Error while updating DataFrame: {e}")
+#         raise HTTPException(status_code=500, detail="Internal Server Error")
+
 @app.get("/data")
 async def data():
+    global df
     try:
         global df, names_count, run_types_count
         df = data_handler.ReturnData()
@@ -72,14 +108,22 @@ async def data():
         # Rename columns for the bar chart
         bar_chart_data = bar_chart_data.rename(columns={"Time": "name", "Number of Requests": "value"})
 
-        # Pie chart and table data (as before)
+        # Pie chart data
         status_counts = df['Status'].value_counts().to_dict()
-        pie_chart_data = [{"name": status, "value": count} for status, count in status_counts.items()]
+        pie_chart_data_status = [{"name": status, "value": count} for status, count in status_counts.items()]
+
+        # Add names_count and run_types_count pie chart data
+        pie_chart_data_names_count = [{"name": name, "value": count} for name, count in names_count.items()]
+        pie_chart_data_run_types_count = [{"name": run_type, "value": count} for run_type, count in run_types_count.items()]
+
+        # Table data
         table_data = df.reset_index().to_dict(orient='records')  # Reset index for table display
 
         return {
             "barChartData": bar_chart_data.to_dict(orient='records'),
-            "pieChartData": pie_chart_data,
+            "pieChartDataStatus": pie_chart_data_status,
+            "pieChartDataNamesCount": pie_chart_data_names_count,
+            "pieChartDataRunTypesCount": pie_chart_data_run_types_count,
             "tableData": table_data,
             "progressValue": 50  # Example value
         }
@@ -90,8 +134,8 @@ async def data():
 
 @app.get("/analytics")
 async def analytics():
+    global df
     try:
-        # Example calculations - replace these with your actual calculations
         average_tokens_per_question = df['TotalTokens'].mean()
         average_cost_per_question = df['TotalCost'].mean()
         total_cost = df['TotalCost'].sum()
