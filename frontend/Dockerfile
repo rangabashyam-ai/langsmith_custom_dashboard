@@ -9,7 +9,7 @@ COPY package-lock.json .
 
 RUN rm -rf node_modules package-lock.json
 RUN npm install --legacy-peer-deps
-RUN npm install ajv
+RUN npm install ajv --legacy-peer-deps
 # Copy the remaining application code to the working directory
 COPY . .
 
