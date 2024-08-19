@@ -8,7 +8,7 @@ COPY package.json .
 COPY package-lock.json .
 
 # Install dependencies
-RUN npm install --force
+RUN npm install
 
 # Copy the remaining application code to the working directory
 COPY . .
