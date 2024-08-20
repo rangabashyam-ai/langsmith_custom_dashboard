@@ -24,7 +24,7 @@ logging.basicConfig(level=logging.INFO)
 
 # Get data and save it to CSV
 print("[INFO] Fetching Data")
-df, names_count, run_types_count = GetData(days=3, hours=5, minutes=30, seconds=0)
+df, names_count, run_types_count = GetData(days=7, hours=5, minutes=30, seconds=0)
 df.to_csv(Path(__file__).parent / 'LangsmithData.csv')
 
 # Initialize DataHandler
