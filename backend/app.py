@@ -52,72 +52,52 @@ async def index():
         raise HTTPException(status_code=404, detail="Index file not found")
 
 
-# @app.get("/data")
-# async def data():
-#     try:
-#         global df, names_count, run_types_count
-#         df = data_handler.ReturnData()
-#         print(names_count)
-#         print(run_types_count)
-
-#         # Convert 'Time' column to datetime if it's not already
-#         df['Time'] = pd.to_datetime(df['Time'])
-
-#         # Set the time column as index
-#         df.set_index('Time', inplace=True)
-
-#         # Resample by hour (or any other period you prefer) and count the number of requests
-#         bar_chart_data = df.resample('H').size().reset_index(name='Number of Requests')
-
-#         # Rename columns for the bar chart
-#         bar_chart_data = bar_chart_data.rename(columns={"Time": "name", "Number of Requests": "value"})
-
-#         # Pie chart and table data (as before)
-#         status_counts = df['Status'].value_counts().to_dict()
-#         pie_chart_data = [{"name": status, "value": count} for status, count in status_counts.items()]
-#         table_data = df.reset_index().to_dict(orient='records')  # Reset index for table display
-
-#         return {
-#             "barChartData": bar_chart_data.to_dict(orient='records'),
-#             "pieChartData": pie_chart_data,
-#             "tableData": table_data,
-#             "progressValue": 50  # Example value
-#         }
-#     except Exception as e:
-#         logging.error(f"Error while updating DataFrame: {e}")
-#         raise HTTPException(status_code=500, detail="Internal Server Error")
-
 @app.get("/data")
 async def data():
     global df
     try:
-        global df, names_count, run_types_count
+        # Fetch updated data
         df = data_handler.ReturnData()
-        print(names_count)
-        print(run_types_count)
 
-        # Convert 'Time' column to datetime if it's not already
-        df['Time'] = pd.to_datetime(df['Time'])
+        # Log the fetched data
+        logging.info(f"DataFrame head: {df.head()}")
+        logging.info(f"Names Count: {names_count}")
+        logging.info(f"Run Types Count: {run_types_count}")
 
-        # Set the time column as index
+        # Ensure 'Time' column exists
+        if 'Time' in df.columns:
+            try:
+                # Attempt to parse the 'Time' column with the correct format
+                df['Time'] = pd.to_datetime(df['Time'], format="%H:%M:%S %m %d %Y", errors='coerce')
+
+                # Check for any invalid dates (NaT values) and log them
+                if df['Time'].isnull().sum() > 0:
+                    logging.warning(f"Invalid date formats found and converted to NaT: {df[df['Time'].isnull()]}")
+
+                # Fill NaT with a default or remove rows with NaT
+                df.dropna(subset=['Time'], inplace=True)  # Dropping rows with invalid 'Time'
+            except Exception as e:
+                logging.error(f"Error parsing 'Time' column: {e}")
+                raise HTTPException(status_code=500, detail=f"Time parsing error: {e}")
+        else:
+            logging.error("'Time' column missing in DataFrame")
+            raise HTTPException(status_code=500, detail="'Time' column missing")
+
+        # Set 'Time' as the index
         df.set_index('Time', inplace=True)
 
-        # Resample by hour (or any other period you prefer) and count the number of requests
+        # Resample and prepare bar chart data
         bar_chart_data = df.resample('H').size().reset_index(name='Number of Requests')
-
-        # Rename columns for the bar chart
         bar_chart_data = bar_chart_data.rename(columns={"Time": "name", "Number of Requests": "value"})
 
-        # Pie chart data
+        # Prepare pie chart data for status, names, and run types
         status_counts = df['Status'].value_counts().to_dict()
         pie_chart_data_status = [{"name": status, "value": count} for status, count in status_counts.items()]
-
-        # Add names_count and run_types_count pie chart data
         pie_chart_data_names_count = [{"name": name, "value": count} for name, count in names_count.items()]
         pie_chart_data_run_types_count = [{"name": run_type, "value": count} for run_type, count in run_types_count.items()]
 
         # Table data
-        table_data = df.reset_index().to_dict(orient='records')  # Reset index for table display
+        table_data = df.reset_index().to_dict(orient='records')
 
         return {
             "barChartData": bar_chart_data.to_dict(orient='records'),
@@ -130,7 +110,6 @@ async def data():
     except Exception as e:
         logging.error(f"Error while updating DataFrame: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
-
 
 @app.get("/analytics")
 async def analytics():
